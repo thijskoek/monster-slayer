@@ -39,22 +39,33 @@ new Vue({
             this.checkWin();
         },
         specialAttack: function() {
-            this.monsterHealth -= this.damage(20);
+            var damageToMonster = this.damage(20);
+            this.monsterHealth -= damageToMonster;
+
+            this.addToActionList({
+                text:"PLAYER HITS MONSTER WITH SPECIAL ATTACK FOR " + damageToMonster,
+                isPlayer: true
+            });
 
             if(this.checkWin()) {
                 return;
             } 
-            this.playerHealth -= this.damage(25);
             this.checkWin();
+            this.monsterAttacks();
         },
         heal: function() {
+            var heal = 10;
             if(this.playerHealth >= 100){
                 this.playerHealth = 100;
             } 
             else {
-                this.playerHealth +=10;
-                
-            }   
+                this.playerHealth += heal;     
+            };
+            this.addToActionList({
+                text:"PLAYER HEALS FOR " + heal,
+                isPlayer: true
+            });   
+            this.monsterAttacks();
         },
         giveUp: function() {
             
