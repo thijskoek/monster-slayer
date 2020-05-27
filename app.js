@@ -3,21 +3,39 @@ new Vue({
     data: {
         playerHealth: 100,
         monsterHealth: 100,
-        gameIsRunning: false
+        gameIsRunning: false,
+        amountList: [],
     },
     methods: {
         startNewGame: function(){
             this.gameIsRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
+            this.amountList = [];
         },
         attack: function() {
-            this.monsterHealth -= this.damage(10);
+            var damageToMonster = this.damage(10);
+            this.isPlayer = true;
+            this.addToActionList({
+                text: "PLAYER HITS MONSTER FOR " + damageToMonster,
+                isPlayer: true
+            });
+            this.monsterHealth -= damageToMonster;
+            this.playerTurnIsAttached = !this.playerTurnIsAttached;
 
             if(this.checkWin()) {
                 return;
-            } 
-            this.playerHealth -= this.damage(15);
+            }   
+            this.monsterAttacks();     
+        },
+        monsterAttacks: function(){
+            var damageToPlayer = this.damage(15);
+            this.isPlayer = false;
+            this.addToActionList({
+                text:"MONSTER HITS PLAYER FOR " + damageToPlayer,
+                isPlayer: false
+            });
+            this.playerHealth -= damageToPlayer;  
             this.checkWin();
         },
         specialAttack: function() {
@@ -65,7 +83,9 @@ new Vue({
                 return true;
             }
             return false;
+        },
+        addToActionList: function(damage) {
+            this.amountList.unshift(damage);
         }
-        
     }
 }); 
